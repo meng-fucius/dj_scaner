@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:dj_scaner/dj_scaner.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,34 +16,29 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String _code = '';
+  bool _init = false;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
     try {
-      platformVersion =
-          await DjScaner.platformVersion ?? 'Unknown platform version';
+      await DjScaner.init();
+      _init = true;
     } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+      print('init  false');
     }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
+    setState(() {});
+  }
 
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+  @override
+  void dispose() {
+    DjScaner.cancel();
+    super.dispose();
   }
 
   @override
@@ -54,7 +49,42 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Column(
+            children: [
+              TextButton(
+                onPressed: () async {
+                  await initPlatformState();
+                },
+                child: const Text('初始化'),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                onPressed: () async {
+                  await DjScaner.addListener((data) {
+                    _code = data;
+                    setState(() {});
+                  });
+                },
+                child: const Text('开始扫描'),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                onPressed: () async {
+                  DjScaner.cancel();
+                },
+                child: const Text('结束扫描'),
+              ),
+              Text(_code),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(_init.toString()),
+            ],
+          ),
         ),
       ),
     );

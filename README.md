@@ -1,15 +1,21 @@
 # dj_scaner
 
-A new flutter plugin project.
+东集PDA手持扫描设备flutter端插件
 
-## Getting Started
+## 初始化
+```dart
+DjScaner.init();
+```
+初始化内容：声音关闭，震动关闭，开机自启动，扫描头关闭
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+##监听扫描内容
+```dart
+await DjScaner.addListener((data) {
+                    _code = data;
+                    setState(() {});
+                  });
+```
+##结束监听
+```dart
+    DjScaner.cancel();
+```
