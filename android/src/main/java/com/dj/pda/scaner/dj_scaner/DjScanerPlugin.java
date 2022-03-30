@@ -47,13 +47,12 @@ public class DjScanerPlugin implements FlutterPlugin, MethodCallHandler {
                     }
                 };
             }
-
             ;
             private BroadcastReceiver scanReceiver;
 
             @Override
             public void onListen(Object arguments, EventChannel.EventSink events) {
-                System.out.println("注册广播");
+                System.out.println("开始监听扫描");
                 scanReceiver = createScanReceiver(events);
                 IntentFilter intentFilter = new IntentFilter();
                 intentFilter.addAction(SCANACTION);
@@ -63,7 +62,7 @@ public class DjScanerPlugin implements FlutterPlugin, MethodCallHandler {
 
             @Override
             public void onCancel(Object arguments) {
-                System.out.println("注销广播");
+                System.out.println("结束监听扫描");
                 context.unregisterReceiver(scanReceiver);
             }
         });
@@ -109,8 +108,7 @@ public class DjScanerPlugin implements FlutterPlugin, MethodCallHandler {
                 call.method.equals("scanEnabled")
         ) {
             boolean arg=(boolean) call.argument("onOpen");
-            System.out.println("扫描开关：");
-            System.out.println(arg);
+            System.out.println("扫描开关："+(arg?"开启":"关闭"));
             Intent intent = new Intent("com.android.scanner.ENABLED");
             intent.putExtra("enabled",arg);
             context.sendBroadcast(intent);

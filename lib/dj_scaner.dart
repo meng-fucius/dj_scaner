@@ -29,7 +29,6 @@ class DjScaner {
   }
 
   static Future init() async {
-    print('初始化');
 
     ///默认关闭声音
     await soundPlay(false);
@@ -45,7 +44,7 @@ class DjScaner {
 
     ///默认关闭扫描
     await scanEnabled(false);
-    print('初始化完成');
+    print('扫描初始化完成');
   }
 
   ///声音开关
